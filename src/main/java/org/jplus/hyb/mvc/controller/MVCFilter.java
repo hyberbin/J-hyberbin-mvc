@@ -17,7 +17,7 @@
 package org.jplus.hyb.mvc.controller;
 
 import org.jplus.annotation.Before;
-import org.jplus.contex.core.ObjectContex;
+import org.jplus.contex.core.ObjectContext;
 import org.jplus.hyb.database.config.ConfigCenter;
 import org.jplus.hyb.database.config.DbConfig;
 import org.jplus.hyb.database.transaction.IDbManager;
@@ -27,7 +27,6 @@ import org.jplus.hyb.log.LoggerManager;
 import org.jplus.hyb.mvc.bean.MVCBean;
 import org.jplus.hyb.mvc.classloader.IMVCLoader;
 import org.jplus.hyb.mvc.classloader.MVCClassScanHandler;
-import org.jplus.scanner.ContexClassScanHandler;
 import org.jplus.scanner.IScanHandler;
 import org.jplus.scanner.ScannerImpl;
 import org.jplus.util.ConverString;
@@ -73,10 +72,9 @@ public class MVCFilter implements Filter {
         if(filterConfig.getInitParameter(IScanHandler.VAR_SCAN_JAR_REGEX)!=null){
             MVCClassScanHandler.setProperties(IScanHandler.VAR_SCAN_JAR_REGEX, filterConfig.getInitParameter(IScanHandler.VAR_SCAN_JAR_REGEX));
         }
-        ScannerImpl.INSTANCE.addScanHandler(new ContexClassScanHandler());
         ScannerImpl.INSTANCE.addScanHandler(MVCClassScanHandler.INSTANCE);
-        ObjectContex.init();
-        log.info("load objects from ObjectContex,count:{}",ObjectContex.CONTEX.getSize());
+        ObjectContext.CONTEXT.init();
+        log.info("load objects from ObjectContex,count:{}", ObjectContext.CONTEXT.getSize());
     }
 
     /**
