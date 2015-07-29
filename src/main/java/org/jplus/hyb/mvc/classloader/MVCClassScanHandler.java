@@ -39,7 +39,7 @@ import java.util.TreeSet;
  *
  * @author hyberbin
  */
-public class MVCClassScanHandler extends ClassLoader implements IScanHandler, IMVCLoader {
+public class MVCClassScanHandler implements IScanHandler, IMVCLoader {
 
     private static final Logger log = LoggerManager.getLogger(MVCClassScanHandler.class);
     private static final String[] separates = new String[]{"/", "{", "}"};
@@ -49,9 +49,9 @@ public class MVCClassScanHandler extends ClassLoader implements IScanHandler, IM
     private static final Properties config = new Properties();
 
     static {
-        setProperties(VAR_SCAN_JAR, "false");
-        setProperties(VAR_SCAN_JAR_REGEX, ".*Controller.*.\\.class");
-        setProperties(VAR_SCAN_CLASSPATH_REGEX, ".*Controller.*.\\.class");
+        setProperties(VAR_SCAN_JAR, "false");//不扫描jar包
+        setProperties(VAR_SCAN_JAR_REGEX, "*");//jar包正则,可以随便
+        setProperties(VAR_SCAN_CLASSPATH_REGEX, "([^$]).*Controller.*class");//类路径扫描正则
     }
     private MVCClassScanHandler() {
     }
@@ -67,10 +67,8 @@ public class MVCClassScanHandler extends ClassLoader implements IScanHandler, IM
     }
 
     @Override
-    public void dealWith(InputStream is) throws Exception {
-        byte[] copyToByteArray = FileCopyUtils.copyToByteArray(is);
-        Class defineClass = defineClass(null, copyToByteArray, 0, copyToByteArray.length);
-        Class clazz = Class.forName(defineClass.getName());//如果不调用这个不能初始化
+    public void dealWith(InputStream is,String filePath,String packagePath) throws Exception {
+        Class clazz = Class.forName(packagePath);//如果不调用这个不能初始化
         try {
             if (clazz.isAnnotationPresent(Action.class)) {
                 Object mvcObject = clazz.newInstance();
